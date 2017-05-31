@@ -168,3 +168,141 @@ dump(chain(range(0), range(1), range(0)))
 --[[test
 error: invalid iterator
 --test]]
+
+--------------------------------------------------------------------------------
+-- chain_from
+--------------------------------------------------------------------------------
+
+dump(chain_from{"abc"})
+--[[test
+a
+b
+c
+--test]]
+
+dump(chain_from{(range(2)), (range(3))})
+--[[test
+1
+2
+1
+2
+3
+--test]]
+
+dump(chain_from(map(range, range(3))))
+--[[test
+1
+1
+2
+1
+2
+3
+--test]]
+
+dump(take(15, cycle(chain_from{ (enumerate{"a", "b", "c"}),
+    {"one", "two", "three"} })))
+--[[test
+1 a
+2 b
+3 c
+one
+two
+three
+1 a
+2 b
+3 c
+one
+two
+three
+1 a
+2 b
+3 c
+--test]]
+
+local tab = {}
+local keys = {}
+for _it, k, v in chain_from{ { a = 11, b = 12, c = 13}, { d = 21, e = 22 } } do
+    tab[k] = v
+    table.insert(keys, k)
+end
+table.sort(keys)
+for _, key in ipairs(keys) do print(key, tab[key]) end
+--[[test
+a 11
+b 12
+c 13
+d 21
+e 22
+--test]]
+
+dump(chain_from{range(0), range(0), (range(0))})
+--[[test
+--test]]
+
+dump(chain_from{range(0), range(1), (range(2))})
+--[[test
+1
+1
+2
+--test]]
+
+dump(take(5, chain_from(cycle({{"one", "two"}}))))
+--[[test
+one
+two
+one
+two
+one
+--test]]
+
+--------------------------------------------------------------------------------
+-- bind
+--------------------------------------------------------------------------------
+
+dump(range(3):bind(range))
+--[[test
+1
+1
+2
+1
+2
+3
+--test]]
+
+
+-- (i, v, j
+--  for i, v in enumerate("abc")
+--  for j in range(i))
+dump(enumerate("abc"):bind(function(i, v) return
+        range(i):map(function(j) return
+          i, v, j
+        end)
+      end))
+--[[test
+1 a 1
+2 b 1
+2 b 2
+3 c 1
+3 c 2
+3 c 3
+--test]]
+
+-- (a*b
+--  for a in {1, 3, 5}
+--  for b in range(a))
+dump(iter{1,3,5}:bind(function(a) return
+  range(a):map(function(b) return
+    a*b
+  end)
+end))
+--[[test
+1
+3
+6
+9
+5
+10
+15
+20
+25
+--test]]

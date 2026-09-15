@@ -1,0 +1,27 @@
+name: Setup emmylua_doc_cli on Linux
+runs:
+  using: composite
+  steps:
+    - name: Setup Rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        toolchain: stable
+
+    - name: Cache Cargo dependencies
+      uses: actions/cache@v6
+      with:
+        path: |
+          $HOME/.cargo/registry
+          $HOME/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
+
+    - name: Setup emmylua_doc_cli
+      run: >
+        cargo install --locked
+        --git https://github.com/EmmyLuaLs/emmylua-analyzer-rust
+        --rev d563de1cb4ecce26111ad9153eca12ef6586a2be
+        emmylua_doc_cli
+      shell: bash

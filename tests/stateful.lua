@@ -1,6 +1,7 @@
 ---@diagnostic disable: undefined-global
 
 -- compatibility with Lua 5.1/5.2
+---@type any
 local unpack = rawget(table, "unpack") or unpack
 
 -- table.maxn was removed in Lua 5.3+

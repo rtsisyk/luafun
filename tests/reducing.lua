@@ -211,16 +211,19 @@ true
 -- any
 --------------------------------------------------------------------------------
 
+---@diagnostic disable-next-line: call-non-callable
 print(any(function(x) return x end, {false, false, false, false}))
 --[[test
 false
 --test]]
 
+---@diagnostic disable-next-line: call-non-callable
 print(any(function(x) return x end, {false, false, false, true}))
 --[[test
 true
 --test]]
 
+---@diagnostic disable-next-line: call-non-callable
 print(any(function(x) return x end, {}))
 --[[test
 false
